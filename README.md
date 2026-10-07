@@ -59,4 +59,4 @@ A web-based **Blood Bank Management System** built using **Python, Django, HTML,
 ---
 
 ## 👨‍💻 Developed By
-**Project Pulse**
+**RAKIB**

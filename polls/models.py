@@ -1,8 +1,18 @@
 from django.db import models
-id = models.BigAutoField(primary_key=True)
+
+BLOOD_GROUP_CHOICES = [
+    ('a+', 'A+'),
+    ('a-', 'A-'),
+    ('b+', 'B+'),
+    ('b-', 'B-'),
+    ('o+', 'O+'),
+    ('o-', 'O-'),
+    ('ab+', 'AB+'),
+    ('ab-', 'AB-'),
+]
+
 
 class donor_Registration(models.Model):
-
     name = models.CharField(
         max_length=50,
         blank=True,
@@ -18,7 +28,7 @@ class donor_Registration(models.Model):
     gender_choices = [
         ('male', 'Male'),
         ('female', 'Female'),
-        ('other', 'Other')
+        ('other', 'Other'),
     ]
     gender = models.CharField(
         max_length=6,
@@ -30,10 +40,11 @@ class donor_Registration(models.Model):
     email = models.EmailField(
         max_length=50,
         blank=True,
-        null=True
+        null=True,
     )
 
-    phone_number = models.IntegerField(
+    phone_number = models.CharField(
+        max_length=15,
         blank=True,
         null=True,
     )
@@ -56,27 +67,16 @@ class donor_Registration(models.Model):
     )
 
     occupation = models.CharField(
-        max_length=15,
+        max_length=50,
         blank=True,
         null=True,
     )
-
-    blood_group_choices = [
-        ('a+', 'A+'),
-        ('a-', 'A-'),
-        ('b+', 'B+'),
-        ('b', 'B'),
-        ('b-', 'B-'),
-        ('o+', 'O+'),
-        ('ab+', 'AB+'),
-        ('ab-', 'AB-'),
-    ]
 
     blood_group = models.CharField(
         max_length=4,
         blank=True,
         null=True,
-        choices=blood_group_choices,
+        choices=BLOOD_GROUP_CHOICES,
     )
 
     home_address = models.TextField(
@@ -151,27 +151,15 @@ class donor_Registration(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.name or "Unknown Donor"
 
 
 class sea_rch(models.Model):
-
-    blood_group_choices = [
-        ('a+', 'A+'),
-        ('a-', 'A-'),
-        ('b+', 'B+'),
-        ('b', 'B'),
-        ('b-', 'B-'),
-        ('o+', 'O+'),
-        ('ab+', 'AB+'),
-        ('ab-', 'AB-'),
-    ]
-
     blood_group = models.CharField(
         max_length=4,
         blank=True,
         null=True,
-        choices=blood_group_choices,
+        choices=BLOOD_GROUP_CHOICES,
     )
 
     state = models.CharField(
@@ -188,14 +176,14 @@ class sea_rch(models.Model):
 
 
 class con_tact(models.Model):
-
     name = models.CharField(
         max_length=50,
         blank=True,
         null=True,
     )
 
-    phone_number = models.IntegerField(
+    phone_number = models.CharField(
+        max_length=15,
         blank=True,
         null=True,
     )
@@ -203,7 +191,7 @@ class con_tact(models.Model):
     email = models.EmailField(
         max_length=50,
         blank=True,
-        null=True
+        null=True,
     )
 
     subject = models.TextField(
@@ -213,4 +201,4 @@ class con_tact(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.name or "Contact Inquiry"

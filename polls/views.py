@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 from .forms import DonorRegistration, Contact, Search
-from .models import donor_Registration, sea_rch, con_tact
+from .models import donor_Registration
 
 
 def home(request):
@@ -12,74 +13,72 @@ def about(request):
 
 
 def donor_registration(request):
-    forms = DonorRegistration()
     if request.method == 'POST':
-        forms = DonorRegistration(request.POST)
-        if forms.is_valid():
-            forms.save()
+        form = DonorRegistration(request.POST)
+        if form.is_valid():
+            donor = form.save()
             context = {
-                'forms': forms
+                'donor': donor,
+                'forms': form
             }
-
             return render(request, 'polls/donor_list.html', context)
-
-        print(forms.errors)
+    else:
+        form = DonorRegistration()
 
     context_form = {
-        'forms': forms
+        'forms': form
     }
-
     return render(request, 'polls/donor_registration.html', context_form)
 
 
 def search(request):
-    forms = Search()
     if request.method == 'POST':
-        forms = Search(request.POST)
-        if forms.is_valid():
-            forms.save()
-            bloodgroup = forms.cleaned_data['blood_group']
-            state = forms.cleaned_data['state']
-            city = forms.cleaned_data['city']
-            donor_filter = donor_Registration.objects.filter(blood_group=bloodgroup,
-                                                             state=state,
-                                                             city=city,
-                                                             )
+        form = Search(request.POST)
+        if form.is_valid():
+            bloodgroup = form.cleaned_data.get('blood_group')
+            state = form.cleaned_data.get('state', '').strip()
+            city = form.cleaned_data.get('city', '').strip()
+
+            donor_filter = donor_Registration.objects.filter(
+                blood_group=bloodgroup,
+                state__icontains=state,
+                city__icontains=city,
+            )
             context = {
-                'donor_filter': donor_filter
+                'donor_filter': donor_filter,
+                'searched_group': bloodgroup,
+                'searched_state': state,
+                'searched_city': city,
             }
-
             return render(request, 'polls/search_list.html', context)
-
-        print(forms.errors)
+    else:
+        form = Search()
 
     context_form = {
-        'forms': forms
+        'forms': form
     }
-
     return render(request, 'polls/search.html', context_form)
 
 
-def search_info(request, email):
-    email = email
-    detail = donor_Registration.objects.get(email=email)
-
+def search_info(request, id):
+    detail = get_object_or_404(donor_Registration, id=id)
     context = {
         'details': detail
     }
-
     return render(request, 'polls/search_info.html', context)
 
 
 def contact(request):
-    forms = Contact()
     if request.method == 'POST':
-        forms = Contact(request.POST)
-        if forms.is_valid():
-            forms.save()
+        form = Contact(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Thank you! Your message has been sent successfully. We will get back to you soon.')
+            form = Contact()  # Reset form after successful submission
+    else:
+        form = Contact()
 
     context = {
-        'forms': forms
+        'forms': form
     }
-
     return render(request, 'polls/contact.html', context)
