@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database (optional to ignore, but best practice)
+*.sqlite3
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
